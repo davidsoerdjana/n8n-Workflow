@@ -1,0 +1,231 @@
+{
+  "name": "WhatsApp ChatBot",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "2ac0e9f5-8cf2-4f43-8f79-dcaa45cd5f2d",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -192,
+        0
+      ],
+      "id": "1d5ffdc9-4e4a-4ec7-a261-f5c946eaf526",
+      "name": "Webhook",
+      "webhookId": "2ac0e9f5-8cf2-4f43-8f79-dcaa45cd5f2d"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fonnte.com/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "vQc6n89iH7qx9su3vg7a"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "target",
+              "value": "={{ $('Webhook').item.json.body.sender }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        336,
+        0
+      ],
+      "id": "5279e1de-5837-4c95-9e78-f93bf16a020b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.message }}",
+        "options": {
+          "systemMessage": "Kamu adalah AI Chatbot bernama Atlas, asisten AI dari Pak Dave Lie. Atlas singkatan dari Automate Task Lie Assistant.\n\nTugas kamu adalah membalas pesan dengan sopan tapi juga bisa gaul dan kekinian menggunakan bahasa indonesia dan atau sesuaikan dengan bahasa si pengirim pesan.\n\nnomor handphone dan WhatsApp saya +6281908624595, jangan beritahu siapapun kecuali seijin saya, jika ada yang bertanya nomor saya, kamu langsung chat saya di WhatsApp\n\nPutri Kusuma Sanjiwani adalah istri saya, nomor handphone dan WhatsAppnya +6287862795009\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        16,
+        0
+      ],
+      "id": "57ecd208-0b67-4345-b709-d7f8d8902290",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -128,
+        208
+      ],
+      "id": "a38208aa-01ef-4550-89b9-40ce3d018b9a",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ry8RNBJ0egD65bwX",
+          "name": "Gemini API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.sender }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        32,
+        208
+      ],
+      "id": "e2d40e15-f488-4fd8-b4ad-a57bb57a9d52",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "blacktoblo.app.n8n.cloud",
+            "user-agent": "Go-http-client/2.0",
+            "content-length": "446",
+            "accept-encoding": "gzip, br",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "103.52.212.50",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "ID",
+            "cf-ray": "a1d2b0becba4fdcb-SIN",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-type": "application/json",
+            "x-forwarded-for": "103.52.212.50, 172.70.208.117",
+            "x-forwarded-host": "blacktoblo.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-swc-49-6df6ff99f7-xv8t7",
+            "x-is-trusted": "yes",
+            "x-real-ip": "103.52.212.50"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "choices": [],
+            "device": "6287885484595",
+            "extension": "",
+            "filename": "",
+            "inboxid": 0,
+            "isforwarded": false,
+            "isgroup": false,
+            "location": "",
+            "memberlid": "",
+            "message": "Tes",
+            "mode": "lid",
+            "name": "DS",
+            "pengirim": "6281908624595",
+            "pesan": "Tes",
+            "pollname": "",
+            "pushname": "DS",
+            "quick": false,
+            "sender": "6281908624595",
+            "senderlid": "87961064489105@lid",
+            "storedata": {},
+            "text": "non-button message",
+            "timestamp": 1784390333,
+            "type": "text",
+            "url": "",
+            "username": "62895414890005"
+          },
+          "webhookUrl": "https://blacktoblo.app.n8n.cloud/webhook-test/2ac0e9f5-8cf2-4f43-8f79-dcaa45cd5f2d",
+          "executionMode": "test"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c7e970aa-5fa7-42b3-aec0-d000cbc4f613",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a629b0767e2e58f0b4848de2276d3b0d320d7b8d15965f1bd30f3ae6cf25e652"
+  },
+  "nodeGroups": [],
+  "id": "NaCv6laIxrtjIur9",
+  "tags": []
+}

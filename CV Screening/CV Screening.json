@@ -1,0 +1,853 @@
+{
+  "name": "CV Screening",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 1. Form Submission",
+        "height": 320,
+        "color": "#E1C6AD"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -576,
+        32
+      ],
+      "typeVersion": 1,
+      "id": "3e5553dd-1c12-4e99-8836-fed8d78b054c",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## 3. CV/Resume Scoring\n",
+        "height": 592,
+        "width": 608,
+        "color": "#ADBBD7"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        192,
+        32
+      ],
+      "typeVersion": 1,
+      "id": "d2affbbc-89ff-4ab4-b1b2-7802b4375856",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## 4. Send Feedback",
+        "height": 352,
+        "width": 688,
+        "color": "#79D28B"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        800,
+        32
+      ],
+      "typeVersion": 1,
+      "id": "6fde7f7f-475b-4f07-97e3-0f50917d1dec",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## 2. Extract CV/Resume",
+        "height": 320,
+        "width": 528,
+        "color": "#F9F19F"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -336,
+        32
+      ],
+      "typeVersion": 1,
+      "id": "de4d13d5-2bc9-4a1a-9815-2adca8d7f7a8",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "formTitle": "Recruitment PT. XYZ",
+        "formDescription": "Silahkan isi data dibawah ini..",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nama Lengkap",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Gender",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Male"
+                  },
+                  {
+                    "option": "Female"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Posisi",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "UI/UX Designer"
+                  },
+                  {
+                    "option": "Front End Developer"
+                  },
+                  {
+                    "option": "Project Manager"
+                  },
+                  {
+                    "option": "AI Automation Developer"
+                  },
+                  {
+                    "option": "Back End Developer"
+                  }
+                ]
+              },
+              "requiredField": "={{ true }}"
+            },
+            {
+              "fieldLabel": "CV/Resume",
+              "fieldType": "file",
+              "acceptFileTypes": ".pdf",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -512,
+        144
+      ],
+      "id": "e1e39383-1ced-4ed6-9502-ff7385b1e5d3",
+      "name": "On form submission",
+      "webhookId": "c6745f49-5335-4f96-b8e9-caf57b280c67"
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "CV_Resume",
+        "name": "={{ $json[\"Nama Lengkap\"] }} - {{ $json.Posisi }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1aPepzTLnlYBKvRVes8Jj8iEfIOOlmJ9l",
+          "mode": "list",
+          "cachedResultName": "CV/Resume Kandidat",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1aPepzTLnlYBKvRVes8Jj8iEfIOOlmJ9l"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -288,
+        144
+      ],
+      "id": "feaa74e9-3aaa-4e54-902a-f21da6302e86",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "zSQK4g80bBAvcxwx",
+          "name": "Google Drive account 152"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        16,
+        144
+      ],
+      "id": "30abd9ef-a591-4a3c-a89c-2b9dde79d44a",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -144,
+        144
+      ],
+      "id": "28d8158e-222a-461a-838e-8f110840ac96",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "EP5B9cFCzbqKrSGY",
+          "name": "Google Drive account 153"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Posisi:  {{ $json.Posisi }}\nSkill yang dibutuhkan: {{ $json.Skill }}\nPendidikan terakhir minimal: {{ $json[\"Pendidikan Terakhir\"] }}\nMinimal pengalaman: {{ $json[\"Minimal Pengalaman\"] }}\nMinimal score: {{ $json[\"Minimal Score\"] }}\nContent: {{ $('Extract from File').item.json.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are an expert HR recruiter and CV screening specialist. Your job is to analyze and score candidate CVs against a specific job requirement.\n\n## INPUT\nYou will receive:\n1. **Job Requirement** — the position, required skills, experience level, and qualifications\n2. **CV/Resume** — the candidate's resume in any format (text, parsed PDF content)\n\nThe CV may be written in Bahasa Indonesia or English. You must be able to understand both.\n\n## SCORING CRITERIA\n\nScore from 0-100 based on these categories:\n\n1. **Skills Match (30%)** — How well do the candidate's skills match the required skills?\n2. **Experience Match (30%)** — Does the candidate's experience level and relevance match?\n3. **Education Match (15%)** — Does the candidate's education align with the role?\n4. **Achievements (15%)** — Does the candidate show measurable impact and accomplishments?\n5. **Overall Impression (10%)** — CV quality, clarity, and professionalism\n\nCalculate the final score as a weighted average of all categories.\n\n## DECISION LOGIC\n\nBased on score:\n- **80-100** → Strong candidate, fill \"alasan_diterima\"\n- **60-79** → Potential candidate, fill both \"alasan_diterima\" and \"alasan_tidak_diterima\"\n- **0-59** → Does not meet requirements, fill \"alasan_tidak_diterima\"\n\n## OUTPUT FORMAT\n\nYou MUST respond with ONLY a valid JSON object. No additional text, no markdown, no backticks.\n\n{\n  \"score\": number,\n  \"alasan_diterima\": \"string or empty string if not qualified\",\n  \"alasan_tidak_diterima\": \"string or empty string if qualified\"\n}\n\n## RULES\n\n1. Be objective — score based on facts in the CV, not assumptions\n2. If information is missing, score lower — do not assume unlisted skills\n3. Do not discriminate based on gender, age, ethnicity, or personal characteristics\n4. CV may be in Bahasa Indonesia — evaluate it correctly\n5. \"alasan_diterima\" and \"alasan_tidak_diterima\" must be written in Bahasa Indonesia\n6. Keep each alasan concise — maximum 2-3 sentences\n7. Always return valid JSON"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        368,
+        144
+      ],
+      "id": "75dc9460-db15-483c-a3ad-5cf20064dcdd",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        272,
+        352
+      ],
+      "id": "c795d3f1-15a8-413a-bd79-97603f081ee6",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FLTbZW6W2gZzEaRi",
+          "name": "Google Gemini(PaLM) Api account 335"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"score\": \"0\",\n\t\"alasan_diterima\": \"\",\n    \"alasan_tidak_diterima\": \"\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        544,
+        352
+      ],
+      "id": "bfe46d8a-b671-4a72-9ab8-7151fa312bcf",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        672,
+        480
+      ],
+      "id": "dd321765-e910-47f6-915c-5920f084cb46",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FLTbZW6W2gZzEaRi",
+          "name": "Google Gemini(PaLM) Api account 335"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8050ca41-38a7-4a9d-99b8-b1acc5e256de",
+              "leftValue": "={{ $json.output.score.toNumber() }}",
+              "rightValue": "={{ $('Requirements').item.json[\"Minimal Score\"] }}",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        832,
+        144
+      ],
+      "id": "ae90da93-ff7e-4633-a770-de75ec3be769",
+      "name": "Lolos?"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1FsMbRlVEBd5EQyI5j4g0By83fwDygLf7lSlTWQbjmLc",
+          "mode": "list",
+          "cachedResultName": "CV/Resume Screening",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FsMbRlVEBd5EQyI5j4g0By83fwDygLf7lSlTWQbjmLc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Applicant Record",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FsMbRlVEBd5EQyI5j4g0By83fwDygLf7lSlTWQbjmLc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nama": "={{ $('On form submission').item.json['Nama Lengkap'] }}",
+            "Email": "={{ $('On form submission').item.json.Email }}",
+            "Posisi": "={{ $('On form submission').item.json.Posisi }}",
+            "Gender": "={{ $('On form submission').item.json.Gender }}",
+            "Tanggal": "={{ $now.format('yyyy-MM-dd') }}",
+            "Diterima?": "YA",
+            "Score": "={{ $('AI Agent').item.json.output.score }}",
+            "Alasan Diterima": "={{ $('AI Agent').item.json.output.alasan_diterima }}",
+            "Link CV/Resume": "={{ $('Download file').item.json.webViewLink }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nama",
+              "displayName": "Nama",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Posisi",
+              "displayName": "Posisi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Gender",
+              "displayName": "Gender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tanggal",
+              "displayName": "Tanggal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Diterima?",
+              "displayName": "Diterima?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Alasan Diterima",
+              "displayName": "Alasan Diterima",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Alasan Ditolak",
+              "displayName": "Alasan Ditolak",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link CV/Resume",
+              "displayName": "Link CV/Resume",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        48
+      ],
+      "id": "dfa41282-607a-401e-971b-47abfb5e7cb9",
+      "name": "Hired",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "PUcW56mndC5ZpqCv",
+          "name": "Google Sheets account 803"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1FsMbRlVEBd5EQyI5j4g0By83fwDygLf7lSlTWQbjmLc",
+          "mode": "list",
+          "cachedResultName": "CV/Resume Screening",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FsMbRlVEBd5EQyI5j4g0By83fwDygLf7lSlTWQbjmLc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Applicant Record",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FsMbRlVEBd5EQyI5j4g0By83fwDygLf7lSlTWQbjmLc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nama": "={{ $('On form submission').item.json['Nama Lengkap'] }}",
+            "Email": "={{ $('On form submission').item.json.Email }}",
+            "Posisi": "={{ $('On form submission').item.json.Posisi }}",
+            "Gender": "={{ $('On form submission').item.json.Gender }}",
+            "Tanggal": "={{ $now.format('yyyy-MM-dd') }}",
+            "Score": "={{ $('AI Agent').item.json.output.score }}",
+            "Alasan Diterima": "=",
+            "Link CV/Resume": "={{ $('Download file').item.json.webViewLink }}",
+            "Alasan Ditolak": "={{ $('AI Agent').item.json.output.alasan_tidak_diterima }}",
+            "Diterima?": "TIDAK"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nama",
+              "displayName": "Nama",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Posisi",
+              "displayName": "Posisi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Gender",
+              "displayName": "Gender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tanggal",
+              "displayName": "Tanggal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Diterima?",
+              "displayName": "Diterima?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Alasan Diterima",
+              "displayName": "Alasan Diterima",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Alasan Ditolak",
+              "displayName": "Alasan Ditolak",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link CV/Resume",
+              "displayName": "Link CV/Resume",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        224
+      ],
+      "id": "b1bd28af-1b17-4445-ac97-88e4f79a8cf4",
+      "name": "Reject",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "PUcW56mndC5ZpqCv",
+          "name": "Google Sheets account 803"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Congratulations! You have been selected for the position of {{ $json.Posisi }}",
+        "emailType": "text",
+        "message": "=Dear {{ $json.Nama.toUpperCase() }},\n\nThank you for your interest in the {{ $json.Posisi }} position in XYZ Company.\n\nWe are pleased to inform that you have successfully passed  the initial screening phase of our selection process.\n\nTo move forward, please select a date and time at the link below that works best for you do next interview:\n\nOnce you have selected time, you will receive a confirmation email containing the interview details and meeting link.\n\nCongratulations on passing the first stage, we look forward to speak to you soon..\n\nBest regards,\n\nDavid Surjana\nHR Recruiter Specialist\nXYZ Company",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        48
+      ],
+      "id": "0fed4310-cb1a-417f-b25f-7aaf3b52d461",
+      "name": "Congrat",
+      "webhookId": "798e707d-b18e-4e82-b5d6-cb8290a2e747",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AQjFYhUkQMJRXZKE",
+          "name": "Gmail account 147"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Mohon maaf, anda tidak lolos di posisi {{ $json.Posisi }}",
+        "emailType": "text",
+        "message": "=Mohon maaf {{ $json.Nama.toUpperCase() }},\nAnda tidak lolos screening untuk posisi {{ $json.Posisi }}.\nFeedback:\n{{ $('AI Agent').item.json.output.alasan_tidak_diterima }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        224
+      ],
+      "id": "97681b20-eff1-48c6-9ee1-75bea1133edf",
+      "name": "Sorry",
+      "webhookId": "798e707d-b18e-4e82-b5d6-cb8290a2e747",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AQjFYhUkQMJRXZKE",
+          "name": "Gmail account 147"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1FsMbRlVEBd5EQyI5j4g0By83fwDygLf7lSlTWQbjmLc",
+          "mode": "list",
+          "cachedResultName": "CV/Resume Screening",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FsMbRlVEBd5EQyI5j4g0By83fwDygLf7lSlTWQbjmLc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1453620648,
+          "mode": "list",
+          "cachedResultName": "Job Opening",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FsMbRlVEBd5EQyI5j4g0By83fwDygLf7lSlTWQbjmLc/edit#gid=1453620648"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Posisi",
+              "lookupValue": "={{ $('On form submission').item.json.Posisi }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        144
+      ],
+      "id": "8e0d8f3c-0a46-4d7c-ba92-29e2f1f72010",
+      "name": "Requirements",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "PUcW56mndC5ZpqCv",
+          "name": "Google Sheets account 803"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Requirements",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Lolos?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lolos?": {
+      "main": [
+        [
+          {
+            "node": "Hired",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hired": {
+      "main": [
+        [
+          {
+            "node": "Congrat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reject": {
+      "main": [
+        [
+          {
+            "node": "Sorry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requirements": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "fc381a8c-9a0b-40a2-9394-534581fe39dc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d2e5c81f36b3fb44b914d2b713f588a1feeaf33a9a6f7f2354052708e50fa870"
+  },
+  "id": "qaJy9HpyvXLihmzz",
+  "tags": []
+}

@@ -1,0 +1,162 @@
+{
+  "name": "Google Sheet and Telegram ChatBot",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1qSCGRkLVyP0SOq4iPQrG0-5nmGF0uC-GBXpprLmqEME",
+          "mode": "list",
+          "cachedResultName": "N8n Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qSCGRkLVyP0SOq4iPQrG0-5nmGF0uC-GBXpprLmqEME/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qSCGRkLVyP0SOq4iPQrG0-5nmGF0uC-GBXpprLmqEME/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9c3f4567-1862-44d5-9f23-d9c690b9ae47",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "Mq40Q0uUPw0OtU5o",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        416,
+        192
+      ],
+      "id": "cb6a5e79-7f32-4c16-bc49-32e46b3560e5",
+      "name": "Telegram Trigger",
+      "webhookId": "e5c2cbf6-3d2b-4876-9a16-302dcb9c45df",
+      "credentials": {
+        "telegramApi": {
+          "id": "ULXHSoDmnQt8Mfye",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "406895512",
+        "text": "=Nama: {{ $json.Nama }}\nEmail: {{ $json.Email }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "7856e215-8cfa-42f5-8438-801065ffb6fa",
+      "name": "Send a text message",
+      "webhookId": "03a20fda-2045-41c6-bd2e-8fa46923e791",
+      "credentials": {
+        "telegramApi": {
+          "id": "ULXHSoDmnQt8Mfye",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3f801448-9d52-44f6-bbb5-0086aea89f31",
+              "leftValue": "={{ $json.Nama }}",
+              "rightValue": "Andromeda",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "85c57440-6510-4b3a-aa2f-ec21f14c46b3",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "b3bfe4ed-95a8-4559-9c52-c7463395a561",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a629b0767e2e58f0b4848de2276d3b0d320d7b8d15965f1bd30f3ae6cf25e652"
+  },
+  "nodeGroups": [],
+  "id": "7SfX8hhNeFhYKd5m",
+  "tags": []
+}

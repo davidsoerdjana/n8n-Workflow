@@ -1,0 +1,395 @@
+{
+  "name": "n8n-comfyui",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ece166a-0536-4c3e-bf1f-e0d4ff300169",
+              "name": "workflow",
+              "value": "={\n  \"3\": {\n    \"inputs\": {\n      \"seed\": {{ (() => {\n  const max = 0xFFFFFFFF - 1;\n  const seed = Math.floor(Math.random() * max) + 1;\n  return seed;\n})() }},\n      \"steps\": 30,\n      \"cfg\": 6,\n      \"sampler_name\": \"euler\",\n      \"scheduler\": \"sgm_uniform\",\n      \"denoise\": 1,\n      \"model\": [\n        \"4\",\n        0\n      ],\n      \"positive\": [\n        \"6\",\n        0\n      ],\n      \"negative\": [\n        \"7\",\n        0\n      ],\n      \"latent_image\": [\n        \"5\",\n        0\n      ]\n    },\n    \"class_type\": \"KSampler\",\n    \"_meta\": {\n      \"title\": \"KSampler\"\n    }\n  },\n  \"4\": {\n    \"inputs\": {\n      \"ckpt_name\": \"hunyuan_dit_1.2.safetensors\"\n    },\n    \"class_type\": \"CheckpointLoaderSimple\",\n    \"_meta\": {\n      \"title\": \"Load Checkpoint\"\n    }\n  },\n  \"5\": {\n    \"inputs\": {\n      \"width\": 1024,\n      \"height\": 1024,\n      \"batch_size\": 1\n    },\n    \"class_type\": \"EmptyLatentImage\",\n    \"_meta\": {\n      \"title\": \"Empty Latent Image\"\n    }\n  },\n  \"6\": {\n    \"inputs\": {\n      \"text\": \"${PROMPT}\",\n      \"clip\": [\n        \"4\",\n        1\n      ]\n    },\n    \"class_type\": \"CLIPTextEncode\",\n    \"_meta\": {\n      \"title\": \"CLIP Text Encode (Positive Prompt)\"\n    }\n  },\n  \"7\": {\n    \"inputs\": {\n      \"text\": \"${NEGATIVE_PROMPT}\",\n      \"clip\": [\n        \"4\",\n        1\n      ]\n    },\n    \"class_type\": \"CLIPTextEncode\",\n    \"_meta\": {\n      \"title\": \"CLIP Text Encode (Negative Prompt)\"\n    }\n  },\n  \"8\": {\n    \"inputs\": {\n      \"samples\": [\n        \"3\",\n        0\n      ],\n      \"vae\": [\n        \"4\",\n        2\n      ]\n    },\n    \"class_type\": \"VAEDecode\",\n    \"_meta\": {\n      \"title\": \"VAE Decode\"\n    }\n  },\n  \"9\": {\n    \"inputs\": {\n      \"filename_prefix\": \"ComfyUI\",\n      \"images\": [\n        \"8\",\n        0\n      ]\n    },\n    \"class_type\": \"SaveImage\",\n    \"_meta\": {\n      \"title\": \"Save Image\"\n    }\n  }\n}",
+              "type": "string"
+            },
+            {
+              "id": "92df0709-c03c-400e-b2ac-1a8e3aff7416",
+              "name": "comfyui_url",
+              "value": "https://e293afe80bfd.ngrok-free.app",
+              "type": "string"
+            },
+            {
+              "id": "fb621130-6eac-41ab-b514-576a0275f6b1",
+              "name": "negative_prompt",
+              "value": "vibrant colors, overexposure, static, blurred details, subtitles, style, artwork, painting, still image, overall grayness, worst quality, low quality, JPEG compression residue, ugly, mutilated, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, malformed limbs, fused fingers, still image, cluttered background, three legs, crowded background, walking backwards",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        928
+      ],
+      "id": "d964d2ec-2fbb-43b4-a81f-7d2cce3e55eb",
+      "name": "Configuration"
+    },
+    {
+      "parameters": {
+        "formTitle": "Upload reference images",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "prompt",
+              "fieldType": "textarea",
+              "placeholder": "what should happen on the video",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Negative prompt",
+              "placeholder": "optional"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -400,
+        928
+      ],
+      "id": "e5e9fe1b-1a8f-44d3-b446-36e4c0a4de8a",
+      "name": "On form submission1",
+      "webhookId": "e0a61b98-84e7-42ab-9c8c-e5b130a8adc4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7d55d6da-a78c-4a28-9343-0ea9035a0aa3",
+              "name": "COMFY_URL",
+              "value": "={{   ((u) => {   let s = u.trim();   if (!/^https?:\\/\\//i.test(s)) s = 'https://' + s;   const parts = s.split('/');   return parts[0] + '//' + parts[2]; })($json.comfyui_url)  }}",
+              "type": "string"
+            },
+            {
+              "id": "c491a696-6081-4e42-98f5-0c3b75c16edc",
+              "name": "NEGATIVE_PROMPT",
+              "value": "={{ $('On form submission1').item.json['Negative prompt'] || $json.negative_prompt }}",
+              "type": "string"
+            },
+            {
+              "id": "e179a11b-ab0b-4772-b151-10b0b7d49a8c",
+              "name": "PROMPT",
+              "value": "={{ $('On form submission1').item.json.prompt }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        928
+      ],
+      "id": "146df76c-9162-43a5-b3d5-7bc0729c28cd",
+      "name": "Setup defaults1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5e89df7d-4c0e-4bd4-8a84-b1e28bdb1f7e",
+              "leftValue": "={{ $json.keys().length > 0 && $json[$('Start the workflow with ComfyUI1').item.json.prompt_id] && $json[$('Start the workflow with ComfyUI1').item.json.prompt_id].status.completed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "354e3206-bbe3-481d-876b-255eed39f7cf",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        912,
+        928
+      ],
+      "id": "7c5916a7-7803-4575-ba34-bc959e08ff3b",
+      "name": "Completed?1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9bfcdffd-8c7c-407d-b95c-83f8aa104845",
+              "leftValue": "={{ $json[$('Start the workflow with ComfyUI1').item.json.prompt_id].status.status_str === 'success' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        912
+      ],
+      "id": "4adb004c-a57c-4663-8065-3f4291ee4583",
+      "name": "Success?1"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Setup defaults1').first().json.COMFY_URL }}/view",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "type",
+              "value": "output"
+            },
+            {
+              "name": "filename",
+              "value": "={{ $('Get generation status1').last().json[$('Start the workflow with ComfyUI1').item.json.prompt_id].outputs.values().map(item => item.images).flat(Infinity).find(item => item.type === 'output').filename }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1488,
+        752
+      ],
+      "id": "b877e6ef-3ebc-4740-9834-0a0d7903d909",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "errorMessage": "An error occoured while generating the image"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        1072
+      ],
+      "id": "82ec9d35-a0db-46d4-9501-c25ff783c8b3",
+      "name": "Stop and Error1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Setup defaults1').first().json.COMFY_URL }}/prompt",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"client_id\": \"n8n\",\n  \"prompt\": {{ \n\n    $('Configuration').item.json.workflow\n      .replace('${PROMPT}', $('Setup defaults1').first().json.PROMPT)\n      .replace('${NEGATIVE_PROMPT}', $('Setup defaults1').first().json.NEGATIVE_PROMPT) \n\n}}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        288,
+        928
+      ],
+      "id": "5e1380b1-b8eb-42b5-be1d-95247b12f821",
+      "name": "Start the workflow with ComfyUI1"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        544,
+        928
+      ],
+      "id": "d9dab822-e213-41bd-9d82-b595adf33b03",
+      "name": "Wait until the gets generated1",
+      "webhookId": "e785aaa5-76f0-473d-bbc9-bd05b1c1565c"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Setup defaults1').first().json.COMFY_URL }}/history/{{ $('Start the workflow with ComfyUI1').first().json.prompt_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        752,
+        928
+      ],
+      "id": "9f671a1e-52e0-4ec7-9c98-41e016264ca7",
+      "name": "Get generation status1",
+      "retryOnFail": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Configuration": {
+      "main": [
+        [
+          {
+            "node": "Setup defaults1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission1": {
+      "main": [
+        [
+          {
+            "node": "Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup defaults1": {
+      "main": [
+        [
+          {
+            "node": "Start the workflow with ComfyUI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Completed?1": {
+      "main": [
+        [
+          {
+            "node": "Success?1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait until the gets generated1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Success?1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start the workflow with ComfyUI1": {
+      "main": [
+        [
+          {
+            "node": "Wait until the gets generated1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait until the gets generated1": {
+      "main": [
+        [
+          {
+            "node": "Get generation status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get generation status1": {
+      "main": [
+        [
+          {
+            "node": "Completed?1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "abd578a6-8a3b-4b69-979a-87eabab0170c",
+  "meta": {
+    "instanceId": "f7943cf072053c1d416fdfd85c0270ea273dd9846c5cc5a95a9a380750c67e9f"
+  },
+  "id": "a8Ygd5JibOUkeOmW",
+  "tags": []
+}
